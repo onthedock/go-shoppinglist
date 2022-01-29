@@ -69,6 +69,8 @@ FAIL    shoppinglist    0.004s
 
 Modificamos el código de la función `AddItem` para que el test pase.
 
+El objetivo es escribir la menor cantidad de código para que el test pase; por ello, en este caso, lo único que haremos es añadir un elemento al *slice*.
+
 ```go
 package shoppinglist
 
