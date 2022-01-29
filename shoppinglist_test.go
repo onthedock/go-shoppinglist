@@ -4,13 +4,13 @@ import "testing"
 
 func TestAddItem(t *testing.T) {
 	t.Run("Add item to list", func(t *testing.T) {
-		shoppinglist := ShoppingList{}
-		assertItems(t, AddItem(shoppinglist, "milk"), 1)
+		sl := ShoppingList{}
+		assertItems(t, AddItem(sl, "milk"), 1)
 	})
 
 	t.Run("Avoid adding duplicate item", func(t *testing.T) {
-		shoppinglist := ShoppingList{"sugar"}
-		assertItems(t, AddItem(shoppinglist, "sugar"), 1)
+		sl := ShoppingList{"sugar"}
+		assertItems(t, AddItem(sl, "sugar"), 1)
 	})
 }
 
