@@ -25,12 +25,12 @@ func ItemPresent(sl ShoppingList, item Item) (int, error) {
 }
 
 func RemoveItem(sl ShoppingList, item Item) int {
-	for i, li := range sl {
-		if li == item {
-			sl[i] = sl[len(sl)-1]
-			sl = sl[:len(sl)-1]
-			return len(sl)
-		}
+	i, err := ItemPresent(sl, item)
+	if err != nil {
+		return len(sl)
 	}
+
+	sl[i] = sl[len(sl)-1]
+	sl = sl[:len(sl)-1]
 	return len(sl)
 }

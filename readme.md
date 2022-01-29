@@ -390,3 +390,22 @@ $ go test
 PASS
 ok      shoppinglist    0.002s
 ```
+
+El siguiente paso es modificar `RemoveItem` para usar también `ItemPresent`.
+
+```go
+func RemoveItem(sl ShoppingList, item Item) int {
+    i, err := ItemPresent(sl, item)
+    if err != nil {
+        return len(sl)
+    }
+
+    sl[i] = sl[len(sl)-1]
+    sl = sl[:len(sl)-1]
+    return len(sl)
+}
+```
+
+Comprobamos si el elemento `item` se encuentra en `sl`. Si no se encuentra (`err != nil`), no es necesario eliminarlo, así que devolvemos la longitud actual del *slice*.
+
+En caso de que no haya error (y por tanto sí que exista el elemento en la lista de la compra), lo eliminamos y devolvemos la longitud del *slice* actualizado.
