@@ -31,7 +31,7 @@ Verificaremos que se ha añadido un elemento a la lista de la compra comprobando
 
 También definimos la función `func assertItems(t *testing.T, got int, want int) {}` como un *helper* (mediante `t.Helper()`) que nos permite evitar repetir la comprobación de `got` y `want` en cada test.
 
-## Eliminando los problemas de compilación
+### Eliminando los problemas de compilación
 
 En este estado, tenemos un problema a la hora de compilar la función:
 
@@ -65,7 +65,7 @@ exit status 1
 FAIL    shoppinglist    0.004s
 ```
 
-## Refactorizar
+### Refactorizar
 
 Modificamos el código de la función `AddItem` para que el test pase.
 
@@ -87,4 +87,3 @@ $ go test
 PASS
 ok      shoppinglist    0.002s
 ```
-
