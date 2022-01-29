@@ -2,15 +2,15 @@ package shoppinglist
 
 import "testing"
 
-func TestAddItem(t *testing.T) {
+func TestAdd(t *testing.T) {
 	t.Run("Add item to list", func(t *testing.T) {
 		sl := ShoppingList{}
-		assertItems(t, AddItem(sl, "milk"), 1)
+		assertItems(t, sl.Add("milk"), 1)
 	})
 
 	t.Run("Avoid adding duplicate item", func(t *testing.T) {
 		sl := ShoppingList{"sugar"}
-		assertItems(t, AddItem(sl, "sugar"), 1)
+		assertItems(t, sl.Add("sugar"), 1)
 	})
 }
 

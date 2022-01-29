@@ -409,3 +409,44 @@ func RemoveItem(sl ShoppingList, item Item) int {
 Comprobamos si el elemento `item` se encuentra en `sl`. Si no se encuentra (`err != nil`), no es necesario eliminarlo, así que devolvemos la longitud actual del *slice*.
 
 En caso de que no haya error (y por tanto sí que exista el elemento en la lista de la compra), lo eliminamos y devolvemos la longitud del *slice* actualizado.
+
+## Convertir las funciones en métodos
+
+Podemos asociar una función a un tipo y convertirlo en un método. Dado que las funciones `AddItem` y `RemoveItem` actúan sobre una variable de tipo `ShoppingList`, lo ideal sería que formaran parte del propio tipo. Así podríamos llamarlas como `sl.Add` y `sl.Remove`, donde `sl` es una variable de tipo `ShoppingList`.
+
+Empezamos modificando el test para la función de añadir un elemento a la lista de la compra:
+
+```go
+func TestAdd(t *testing.T) {
+    t.Run("Add item to list", func(t *testing.T) {
+        sl := ShoppingList{}
+        assertItems(t, sl.Add("milk"), 1)
+    })
+
+    t.Run("Avoid adding duplicate item", func(t *testing.T) {
+        sl := ShoppingList{"sugar"}
+        assertItems(t, sl.Add("sugar"), 1)
+    })
+}
+```
+
+Al ejecutar `go test`:
+
+```bash
+$ go test
+# shoppinglist [shoppinglist.test]
+./shoppinglist_test.go:8:20: sl.Add undefined (type ShoppingList has no field or method Add)
+FAIL    shoppinglist [build failed]
+```
+
+Solucionamos los problemas de compilación mediante:
+
+```go
+func (sl ShoppingList) Add(item Item) int {
+    _, err := ItemPresent(sl, item)
+    if err != nil {
+        sl = append(sl, item)
+    }
+    return len(sl)
+}
+```

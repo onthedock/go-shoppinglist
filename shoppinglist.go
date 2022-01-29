@@ -7,7 +7,7 @@ import (
 type Item string
 type ShoppingList []Item
 
-func AddItem(sl ShoppingList, item Item) int {
+func (sl ShoppingList) Add(item Item) int {
 	_, err := ItemPresent(sl, item)
 	if err != nil {
 		sl = append(sl, item)
