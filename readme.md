@@ -352,11 +352,11 @@ func TestRemoveItem(t *testing.T) {
 }
 ```
 
-### ¿Refactorizamos?
+### ¿Refactorizamos `RemoveItem`?
 
 Al crear la función `ItemPresent` parecía que podríamos reusarla tanto al añadir como al eliminar un elemento de la lista... Pero acabamos de ver que para eliminar un elemento de un *slice* es necesario conocer la posición en la que se encuentra. La función `ItemPresent` sólo devuelve `true` si encuentra una coincidencia, pero no devuelve la posición.
 
-Aquí es donde deberíamos aprovechar que en Go, las funciones pueden devolver múltiples valores. Lo *idiomático* en Go sería (supongo) devolver un enterno (con la posición de la coincidencia, o -1, si no se encuentra) y un error (*nil* o un error, si no se ha encontrado el *item*).
+Aquí es donde deberíamos aprovechar que en Go, las funciones pueden devolver múltiples valores. Lo *idiomático* en Go sería (supongo) devolver un entero (con la posición de la coincidencia, o -1, si no se encuentra) y un error (*nil* o un error, si no se ha encontrado el *item*).
 
 Antes de empezar a modificar `RemoveItem`, adaptamos la función `ItemPresent`:
 
@@ -371,7 +371,7 @@ func ItemPresent(sl ShoppingList, item Item) (int, error) {
 }
 ```
 
-Cambiamos el valor `bool` por `(int, error)`, para la posición en la que se ha encontrado la coincidencia y para un error, en caso de no se haya encontrado.
+Cambiamos el valor `bool` por `(int, error)`, para la posición en la que se ha encontrado la coincidencia y un error, en caso de no se haya encontrado.
 
 Como antes, recorremos la lista de la compra, pero esta vez sí que estamos interesados en el valor del índice en el *slice*. Si el elemento se encuentra en la lista de la compra, devolvemos el índice y `nil`.
 
