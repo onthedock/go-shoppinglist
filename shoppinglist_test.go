@@ -3,7 +3,7 @@ package shoppinglist
 import "testing"
 
 func TestAddItem(t *testing.T) {
-	shoppinglist := []string{}
+	shoppinglist := ShoppingList{}
 
 	assertItems(t, AddItem(shoppinglist, "milk"), 1)
 }

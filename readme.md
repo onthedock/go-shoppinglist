@@ -87,3 +87,53 @@ $ go test
 PASS
 ok      shoppinglist    0.002s
 ```
+
+## Crear un tipo específico
+
+Vamos a definir tipos específicos que esperamos que haga más sencillo de entender el código.
+
+```go
+type Item string
+type ShoppingList []Item
+```
+
+Empezamos actualizando el test para definir `shoppinglist` de tipo `ShoppingList`:
+
+```go
+func TestAddItem(t *testing.T) {
+    shoppinglist := ShoppingList{}
+
+    assertItems(t, AddItem(shoppinglist, "milk"), 1)
+}
+```
+
+Al ejecutar `go test`, encontramos errores de compilación:
+
+```bash
+$ go test
+# shoppinglist [shoppinglist.test]
+./shoppinglist_test.go:6:18: undefined: ShoppingList
+FAIL    shoppinglist [build failed]
+```
+
+Vamos a definir los nuevos tipos (en `shoppinglist.go`):
+
+```go
+type Item string
+type ShoppingList []Item
+```
+
+Tenemos que modificar la función `AddItem` para reflejar los nuevos tipos de los parámetros para la función:
+
+```go
+func AddItem(shoppinglist ShoppingList, item Item) int {
+...
+```
+
+Una vez actualizado, validamos que el test sigue pasando:
+
+```bash
+$ go test
+PASS
+ok      shoppinglist    0.002s
+```
