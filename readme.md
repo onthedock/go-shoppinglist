@@ -351,3 +351,42 @@ func TestRemoveItem(t *testing.T) {
     })
 }
 ```
+
+### ¿Refactorizamos?
+
+Al crear la función `ItemPresent` parecía que podríamos reusarla tanto al añadir como al eliminar un elemento de la lista... Pero acabamos de ver que para eliminar un elemento de un *slice* es necesario conocer la posición en la que se encuentra. La función `ItemPresent` sólo devuelve `true` si encuentra una coincidencia, pero no devuelve la posición.
+
+Aquí es donde deberíamos aprovechar que en Go, las funciones pueden devolver múltiples valores. Lo *idiomático* en Go sería (supongo) devolver un enterno (con la posición de la coincidencia, o -1, si no se encuentra) y un error (*nil* o un error, si no se ha encontrado el *item*).
+
+Antes de empezar a modificar `RemoveItem`, adaptamos la función `ItemPresent`:
+
+```go
+func ItemPresent(sl ShoppingList, item Item) (int, error) {
+    for i, li := range sl {
+        if li == item {
+            return i, nil
+        }
+    }
+    return -1, errors.New("item not found")
+}
+```
+
+Cambiamos el valor `bool` por `(int, error)`, para la posición en la que se ha encontrado la coincidencia y para un error, en caso de no se haya encontrado.
+
+Como antes, recorremos la lista de la compra, pero esta vez sí que estamos interesados en el valor del índice en el *slice*. Si el elemento se encuentra en la lista de la compra, devolvemos el índice y `nil`.
+
+En el caso de que no se encuentre, devolvemos `-1` y un nuevo error indicando que no se ha encontrado el item en la lista de la compra.
+
+A continuación tenemos que adaptar la función `AddItem`, donde se usa `ItemPresent`.
+
+Llamamos a la función e ignoramos el índice (no nos interesa para la función `AddItem`). Si `ItemPresent` devuelve error, significa que no se ha encontrado el item a la lista de compra, y por tanto, lo añadimos.
+
+Para finalizar, devolvemos la longitud de la lista de la compra.
+
+Tras estas modificaciones, volvemos a verificar que los tests pasan:
+
+```bash
+$ go test
+PASS
+ok      shoppinglist    0.002s
+```
