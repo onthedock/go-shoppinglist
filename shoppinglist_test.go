@@ -20,3 +20,14 @@ func assertItems(t *testing.T, got int, want int) {
 		t.Errorf("obtengo %d elementos en la lista pero esperaba %d", got, want)
 	}
 }
+
+func TestRemoveItem(t *testing.T) {
+	t.Run("Remove item", func(t *testing.T) {
+		sl := ShoppingList{"milk", "sugar"}
+		assertItems(t, RemoveItem(sl, "sugar"), 1)
+	})
+	t.Run("Do nothing if item is not found", func(t *testing.T) {
+		sl := ShoppingList{"milk", "sugar"}
+		assertItems(t, RemoveItem(sl, "bread"), 2)
+	})
+}

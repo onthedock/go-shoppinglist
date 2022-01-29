@@ -19,3 +19,14 @@ func ItemPresent(sl ShoppingList, item Item) bool {
 	}
 	return false
 }
+
+func RemoveItem(sl ShoppingList, item Item) int {
+	for i, li := range sl {
+		if li == item {
+			sl[i] = sl[len(sl)-1]
+			sl = sl[:len(sl)-1]
+			return len(sl)
+		}
+	}
+	return len(sl)
+}

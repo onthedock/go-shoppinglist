@@ -269,3 +269,85 @@ $ go test -v
 PASS
 ok      shoppinglist    0.002s
 ```
+
+## Eliminando elementos de la lista de la compra
+
+Como antes, primero vamos a introducir una función que nos permita eliminar un elemento (presente) en la lista de la compra.
+
+### Creamos el test que valide la eliminación del elemento
+
+Empezamos por definir el test:
+
+```go
+func TestRemoveItem(t *testing.T) {
+    sl := ShoppingList{"milk", "sugar"}
+    assertItems(t, RemoveItem(sl, "sugar"), 1)
+}
+```
+
+### Eliminamos los errores de compilación
+
+La ejecución del test vuelve a mostrar errores de compilación, ya que la función `RemoveItem` no existe todavía.
+
+```go
+func RemoveItem(sl ShoppingList, item Item) int {
+    return 0
+}
+```
+
+Usamos **el mínimo código posible** para eliminar los errores de compilación:
+
+```bash
+$ go test
+--- FAIL: TestRemoveItem (0.00s)
+    shoppinglist_test.go:26: obtengo 0 elementos en la lista pero esperaba 1
+FAIL
+exit status 1
+FAIL    shoppinglist    0.003s
+```
+
+### Hacemos que la ejecución de los tests devuelva `PASS`
+
+Ahora introducimos la mínima código posible para pasar el test:
+
+```go
+func RemoveItem(sl ShoppingList, item Item) int {
+    for i, li := range sl {
+        if li == item {
+            sl[i] = sl[len(sl)-1]
+            sl = sl[:len(sl)-1]
+            return len(sl)
+        }
+    }
+    return len(sl)
+}
+```
+
+He usado el método *rápido*, que no preserva el orden de los elementos en el *slice* descrito en [2 ways to delete an element from a slice](https://yourbasic.org/golang/delete-element-slice/).
+
+Este método sustituye el último elemento en el *slice* en la posición en la que hay una coincidencia. Esto elimina el elemento que queremos, pero deja un duplicado en las posiciones `i` y `len(slice)-1` (la última posición en el *slice*). Para eliminar el duplicado, copiamos todos los elementos **menos el último** a un nuevo *slice*, con lo que eliminamos el elemento duplicado.
+
+Si el elemento `item` no está en la lista de la compra, no hacemos nada.
+
+Validamos que el test pasa:
+
+```bash
+$ go test 
+PASS
+ok      shoppinglist    0.002s
+```
+
+Antes de pasar a refactorizar, quizás deberíamos añadir otro test para validar que en caso de que el elemento que se quiere eliminar no se encuentra en la lista todo funciona correctamente...
+
+```go
+func TestRemoveItem(t *testing.T) {
+    t.Run("Remove item", func(t *testing.T) {
+        sl := ShoppingList{"milk", "sugar"}
+        assertItems(t, RemoveItem(sl, "sugar"), 1)
+    })
+    t.Run("Do nothing if item is not found", func(t *testing.T) {
+        sl := ShoppingList{"milk", "sugar"}
+        assertItems(t, RemoveItem(sl, "bread"), 2)
+    })
+}
+```
