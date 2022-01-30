@@ -227,7 +227,7 @@ PASS
 ok      shoppinglist    0.002s
 ```
 
-### Refactorizar - `IsItemPresent()`
+### Refactorizar - `ItemPresent()`
 
 Lo de tener que buscar si un elemento ya está en la lista de la compra será algo que tendremos que reutilizar (por ejemplo, cuando querramos eliminar un elemento de la lista).
 
