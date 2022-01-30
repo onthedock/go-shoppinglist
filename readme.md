@@ -451,43 +451,9 @@ func (sl ShoppingList) Add(item Item) int {
 }
 ```
 
-## Convertir las funciones en *métodos* para el tipo `ShoppingLIst`
+## Convertir el resto de funciones
 
-Poco a poc estamos viendo que la funcionalidad a la lista de la compra la podemos encapsular en el nuevo tipo `ShoppingList`. Así que el siguiente paso natural es el de convertir las funciones en *métodos*.
-
-Para ello, modificamos los tests asociados a la función `AddItem` que convertiremos en `Add`:
-
-```go
-func TestAdd(t *testing.T) {
-    t.Run("Add item to list", func(t *testing.T) {
-        sl := ShoppingList{}
-        assertItems(t, sl.Add("milk"), 1)
-    })
-
-    t.Run("Avoid adding duplicate item", func(t *testing.T) {
-        sl := ShoppingList{"sugar"}
-        assertItems(t, sl.Add("sugar"), 1)
-    })
-}
-```
-
-A parte de moficicar el nombre del test, también cambiamos cómo llamamos a la función en `AssertItems(t, sl.Add("milk"), 1)`.
-
-Para hacer solucionar los errores de compilación, cambiamos el nombre de la función de `AddItem` a `Add` y la *signature* de la función:
-
-```go
-func (sl ShoppingList) Add(item Item) int {
-    _, err := ItemPresent(sl, item)
-    if err != nil {
-        sl = append(sl, item)
-    }
-    return len(sl)
-}
-```
-
-Tras esta modificación, los tests pasan correctamente.
-
-Así que realizamos la misma modificación para `RemoveItem` (que renombramos a `Remove`) y repetimos el proceso; modificamos el test:
+Realizamos la misma modificación para `RemoveItem` (que renombramos a `Remove`) y repetimos el proceso; modificamos el test:
 
 ```go
 func TestRemoveItem(t *testing.T) {
