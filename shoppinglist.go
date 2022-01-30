@@ -24,7 +24,7 @@ func ItemPresent(sl ShoppingList, item Item) (int, error) {
 	return -1, errors.New("item not found")
 }
 
-func RemoveItem(sl ShoppingList, item Item) int {
+func (sl ShoppingList) Remove(item Item) int {
 	i, err := ItemPresent(sl, item)
 	if err != nil {
 		return len(sl)

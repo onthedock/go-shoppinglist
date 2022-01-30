@@ -450,3 +450,87 @@ func (sl ShoppingList) Add(item Item) int {
     return len(sl)
 }
 ```
+
+## Convertir las funciones en *métodos* para el tipo `ShoppingLIst`
+
+Poco a poc estamos viendo que la funcionalidad a la lista de la compra la podemos encapsular en el nuevo tipo `ShoppingList`. Así que el siguiente paso natural es el de convertir las funciones en *métodos*.
+
+Para ello, modificamos los tests asociados a la función `AddItem` que convertiremos en `Add`:
+
+```go
+func TestAdd(t *testing.T) {
+    t.Run("Add item to list", func(t *testing.T) {
+        sl := ShoppingList{}
+        assertItems(t, sl.Add("milk"), 1)
+    })
+
+    t.Run("Avoid adding duplicate item", func(t *testing.T) {
+        sl := ShoppingList{"sugar"}
+        assertItems(t, sl.Add("sugar"), 1)
+    })
+}
+```
+
+A parte de moficicar el nombre del test, también cambiamos cómo llamamos a la función en `AssertItems(t, sl.Add("milk"), 1)`.
+
+Para hacer solucionar los errores de compilación, cambiamos el nombre de la función de `AddItem` a `Add` y la *signature* de la función:
+
+```go
+func (sl ShoppingList) Add(item Item) int {
+    _, err := ItemPresent(sl, item)
+    if err != nil {
+        sl = append(sl, item)
+    }
+    return len(sl)
+}
+```
+
+Tras esta modificación, los tests pasan correctamente.
+
+Así que realizamos la misma modificación para `RemoveItem` (que renombramos a `Remove`) y repetimos el proceso; modificamos el test:
+
+```go
+func TestRemoveItem(t *testing.T) {
+    t.Run("Remove item", func(t *testing.T) {
+        sl := ShoppingList{"milk", "sugar"}
+        assertItems(t, sl.Remove("sugar"), 1)
+    })
+    t.Run("Do nothing if item is not found", func(t *testing.T) {
+        sl := ShoppingList{"milk", "sugar"}
+        assertItems(t, sl.Remove("bread"), 2)
+    })
+}
+```
+
+Esto provoca errores de compilación.
+
+```bash
+$ go test
+# shoppinglist [shoppinglist.test]
+./shoppinglist_test.go:27:20: sl.Remove undefined (type ShoppingList has no field or method Remove)
+./shoppinglist_test.go:31:20: sl.Remove undefined (type ShoppingList has no field or method Remove)
+FAIL    shoppinglist [build failed]
+```
+
+Los corregimos:
+
+```go
+func (sl ShoppingList) Remove(item Item) int {
+    i, err := ItemPresent(sl, item)
+    if err != nil {
+        return len(sl)
+    }
+
+    sl[i] = sl[len(sl)-1]
+    sl = sl[:len(sl)-1]
+    return len(sl)
+}
+```
+
+Y validamos que todo vuelve a estar OK:
+
+```bash
+$ go test
+PASS
+ok      shoppinglist    0.002s
+```
