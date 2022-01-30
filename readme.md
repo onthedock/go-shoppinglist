@@ -534,3 +534,106 @@ $ go test
 PASS
 ok      shoppinglist    0.002s
 ```
+
+## Convertir *ShoppingList* en una aplicación
+
+Hemos definido un tipo `ShoppingList` y unos métodos para añadir o eliminar elementos a la lista de la compra.
+
+El siguiente paso es usar estas funciones como parte de una aplicación que *haga algo*.
+
+Para ello, movemos el fichero `shoppinglist.go` y `shoppinglist_test.go` a una carpeta llamada `shoppinglist`.
+
+En la carpeta raíz, hemos inicializado el módulo llamado `demoapp` con `go mod init demoapp`.
+
+Creamos un fichero para los tests `main_test.go` para seguir con la dinámica que hemos establecido.
+La estructura de carpetas y ficheros queda:
+
+```bash
+$ tree 
+.
+├── go.mod
+├── main_test.go
+├── readme.md
+└── shoppinglist
+    ├── shoppinglist.go
+    └── shoppinglist_test.go
+```
+
+### Crear el test
+
+En el fichero `main_test.go` definimos el test para la aplicación que usará las funciones que hemos definido para gestionar la lista de la compra:
+
+```go
+package main
+
+import (
+    "demoapp/shoppinglist"
+    "testing"
+)
+
+func TestPrintShoppingList(t *testing.T) {
+    sl := shoppinglist.ShoppingList{"milk", "sugar"}
+    got := PrintShoppingList(sl)
+    want := "Mi lista de la compra es: milk sugar"
+    if got != want {
+        t.Errorf("obtengo %q pero quería %q", got, want)
+    }
+}
+```
+
+`shoppinglist` es un *package* del módulo `demoapp`; para poder usar las funciones definidas en el *package*, debemos importarlo. El nombre del *package* también es la ruta al *package*; en general, el nombre del módulo es la ruta al repositorio desde donde se puede obtener mediante `go get`, por lo que lo habitual es que sea de la forma `github.com/onthedock/demoapp`, por ejemplo.
+
+Como para el resto de funciones, variables, etc, *importadas*, debemos precederlas del nombre del *package*.
+
+Al ejecutar el test, obtenemos errores de compilación porque `PrintShoppingList` todavía no existe.
+
+Lo creamos con el mínimo código posible para eliminar los errores de compilación:
+
+```go
+package main
+
+import (
+    "demoapp/shoppinglist"
+    "fmt"
+)
+
+func PrintShoppingList(sl shoppinglist.ShoppingList) string {
+    return ""
+}
+
+func main() {
+    sl := shoppinglist.ShoppingList{"milk", "sugar", "bread"}
+    fmt.Println(PrintShoppingList(sl))
+}
+```
+
+Verificamos que los errores de compilación ya han sido solucionados:
+
+```bash
+$ go test
+--- FAIL: TestPrintShoppingList (0.00s)
+    main_test.go:13: obtengo "" pero quería "Mi lista de la compra es: milk sugar"
+FAIL
+exit status 1
+FAIL    demoapp 0.006s
+```
+
+Ahora nos centramos en hacer que el test pase:
+
+```go
+func PrintShoppingList(sl shoppinglist.ShoppingList) string {
+    var l = shoppinglist.Item("Mi lista de la compra es:")
+    for _, item := range sl {
+        l += " " + item
+    }
+    return string(l)
+}
+```
+
+Y efectivamente, el test pasa:
+
+```bash
+$ go test
+PASS
+ok      demoapp 0.002s
+```
