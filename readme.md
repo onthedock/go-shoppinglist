@@ -610,4 +610,4 @@ El procedimiento de crear primero el test, solucionar problemas de compilación,
 
 Los tests nos ayudan a *pensar* en los detalles a implementar y nos ayudan a realizar modificaciones con confianza.
 
-En esta aplicación *demo*, hemos seguido un camino inverso al que usaríamos habitualmente al construir una aplicación, en el que empezaríamos por un *package main* y cuando la aplicación alcanzara un tamaño poco manegable, la dividiríamos en módulos y *packages*. Como el objetivo era demostrar cómo usar el método de desarrollo basado en tests (y el resultado final de la "app" es el mismo), el orden en el que hemos desarrollado los *packages* no es relevante.
+En esta aplicación *demo*, hemos seguido un camino inverso al que usaríamos habitualmente al construir una aplicación, en el que empezaríamos por un *package main* y cuando la aplicación alcanzara un tamaño poco manejable, la dividiríamos en módulos y *packages*. Como el objetivo era demostrar cómo usar el método de desarrollo basado en tests (y el resultado final de la "app" es el mismo), el orden en el que hemos desarrollado los *packages* no es relevante.
